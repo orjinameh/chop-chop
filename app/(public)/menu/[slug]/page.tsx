@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/utils";
 import { AddToCartButton } from "@/components/menu/add-to-cart-button";
 import { MenuCard } from "@/components/menu/menu-card";
+export const dynamic = 'force-dynamic';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
