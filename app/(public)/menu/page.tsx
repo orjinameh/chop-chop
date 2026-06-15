@@ -26,8 +26,8 @@ async function getMenuData(category?: string, q?: string) {
         ...(q
           ? {
               OR: [
-                { name:        { contains: q, mode: "insensitive" } },
-                { description: { contains: q, mode: "insensitive" } },
+                { name:        { contains: q} },
+                { description: { contains: q} },
               ],
             }
           : {}),
