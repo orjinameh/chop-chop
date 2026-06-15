@@ -8,6 +8,17 @@ export const metadata: Metadata = { title: "Dashboard | Admin" };
 // No cache — always fresh
 export const dynamic = "force-dynamic";
 
+// Define the shape of the order based on your Prisma query and UI needs
+interface DashboardOrder {
+  id: string;
+  orderNumber: string;
+  customerName: string;
+  total: number;
+  status: string;
+  createdAt: Date;
+  items: { name: string; quantity: number }[];
+}
+
 async function getDashboardData() {
   const [
     totalOrders,
@@ -20,7 +31,7 @@ async function getDashboardData() {
     prisma.order.count({ where: { paymentStatus: "PAID" } }),
     prisma.order.count({ where: { status: "PENDING" } }),
     prisma.order.findMany({
-      take:    8,
+      take: 8,
       orderBy: { createdAt: "desc" },
       include: { items: { select: { name: true, quantity: true } } },
     }),
@@ -47,30 +58,30 @@ export default async function DashboardPage() {
     {
       label: "Total Revenue",
       value: formatPrice(totalRevenue),
-      icon:  TrendingUp,
+      icon: TrendingUp,
       color: "text-emerald-500",
-      bg:    "bg-emerald-50",
+      bg: "bg-emerald-50",
     },
     {
       label: "Total Orders",
       value: totalOrders,
-      icon:  ShoppingBag,
+      icon: ShoppingBag,
       color: "text-blue-500",
-      bg:    "bg-blue-50",
+      bg: "bg-blue-50",
     },
     {
       label: "Completed",
       value: paidOrders,
-      icon:  CheckCircle2,
+      icon: CheckCircle2,
       color: "text-brand-500",
-      bg:    "bg-brand-50",
+      bg: "bg-brand-50",
     },
     {
       label: "Pending",
       value: pendingOrders,
-      icon:  Clock,
+      icon: Clock,
       color: "text-yellow-500",
-      bg:    "bg-yellow-50",
+      bg: "bg-yellow-50",
     },
   ];
 
@@ -127,7 +138,8 @@ export default async function DashboardPage() {
                     </td>
                   </tr>
                 ) : (
-                  recentOrders.map((order) => {
+                  // Apply the DashboardOrder type here
+                  recentOrders.map((order: DashboardOrder) => {
                     const statusInfo = ORDER_STATUS_MAP[order.status] ?? {
                       label: order.status,
                       color: "bg-gray-100 text-gray-700",
@@ -157,9 +169,9 @@ export default async function DashboardPage() {
                         </td>
                         <td className="px-4 py-3 text-ink-muted hidden md:table-cell">
                           {new Date(order.createdAt).toLocaleDateString("en-NG", {
-                            day:   "numeric",
+                            day: "numeric",
                             month: "short",
-                            year:  "numeric",
+                            year: "numeric",
                           })}
                         </td>
                       </tr>
