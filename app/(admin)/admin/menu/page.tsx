@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Plus } from "lucide-react";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,11 @@ import { DeleteMenuItemButton } from "@/components/admin/delete-menu-item-button
 
 export const metadata: Metadata = { title: "Menu Management | Admin" };
 export const dynamic = "force-dynamic";
+
+// 1. Define the specific type based on your Prisma query
+type MenuItemWithCategory = Prisma.MenuItemGetPayload<{
+  include: { category: true };
+}>;
 
 export default async function AdminMenuPage() {
   const items = await prisma.menuItem.findMany({
@@ -56,7 +62,8 @@ export default async function AdminMenuPage() {
                   </td>
                 </tr>
               ) : (
-                items.map((item) => (
+                // 2. Explicitly apply the type to the item parameter here
+                items.map((item: MenuItemWithCategory) => (
                   <tr key={item.id} className="hover:bg-surface-muted/40 transition-colors">
                     {/* Thumbnail */}
                     <td className="px-4 py-3 w-12">
